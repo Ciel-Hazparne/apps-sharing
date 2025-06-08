@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'type' => 'success',
             'message' => "Votre commentaire a été publié avec succès."
         ];
-        header("Location: ../apps/app_read.php?id=" . $app_id);
+        header("Location: ../apps/app_show.php?id=" . $app_id);
     } else {
         $_SESSION['flash'] = [
             'type' => 'danger',

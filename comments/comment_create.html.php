@@ -28,7 +28,7 @@ $app_id = isset($_GET['app_id']) ? (int) $_GET['app_id'] : 0;
     </div>
 
     <button type="submit" class="btn btn-success">Envoyer</button>
-    <a href="../apps/app_read.php?id=<?= $app_id; ?>" class="btn btn-secondary">Annuler</a>
+    <a href="../apps/app_show.php?id=<?= $app_id; ?>" class="btn btn-secondary">Annuler</a>
 </form>
 
 <?php require_once(__DIR__ . '/../partials/footer.html.php'); ?>
