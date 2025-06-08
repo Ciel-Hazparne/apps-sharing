@@ -23,7 +23,7 @@ require_once(__DIR__ . '/../partials/header.html.php');
             <div class="card h-100 shadow-sm border-primary">
                 <div class="card-body d-flex flex-column">
                     <h4 class="card-title">
-                        <a href="../apps/app_show.php?id=<?= $app['app_id']; ?>"
+                        <a href="../apps/app_read.php?id=<?= $app['app_id']; ?>"
                            class="text-decoration-none text-primary"> <?= htmlspecialchars($app['name']); ?>
                             <span class="ms-2 text-info" style="font-size: 1rem;">
                                 <i class="fa fa-hand-o-left"></i> Infos</span>

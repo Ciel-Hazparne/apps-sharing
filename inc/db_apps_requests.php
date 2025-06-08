@@ -59,7 +59,7 @@ function updateApp(PDO $pdo, int $id, string $name, string $description, string 
     ]);
 }
 
-function showApp(PDO $pdo, int $id): array|false
+function readApp(PDO $pdo, int $id): array|false
 {
     $stmt = $pdo->prepare('
         SELECT a.*, c.comment_id, c.comment AS details, c.user_id,  DATE_FORMAT(c.created_at, "%d/%m/%Y") AS comment_date, u.full_name 

@@ -20,7 +20,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $id = (int)$_GET['id'];
 $pdo = getPDO();
-$appDetails = showApp($pdo, $id);
+$appDetails = readApp($pdo, $id);
 
 if (empty($appDetails)) {
     echo "L'application n'existe pas.";
