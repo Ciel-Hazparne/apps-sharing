@@ -35,7 +35,7 @@ if (isset($loginData['email']) && isset($loginData['password'])) {
 
     // Redirige vers home si connecté, sinon retour au login
     if (isset($_SESSION['LOGGED_USER'])) {
-        redirectToUrl('../home.php');
+        redirectToUrl('../pages/home.php');
     } else {
         redirectToUrl('login.html.php');
     }
