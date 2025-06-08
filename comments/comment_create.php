@@ -42,5 +42,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-header("Location: ../pages/home.php");
+header("Location: ../pages/home.html.php");
 exit;

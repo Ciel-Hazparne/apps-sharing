@@ -48,7 +48,7 @@ if (!$app) {
                 <?php endif; ?>
             </div>
             <div class="mt-4">
-                <a href="../pages/home.php" class="btn btn-dark">
+                <a href="../pages/home.html.php" class="btn btn-dark">
                     <i class="fa fa-reply"></i> Retour
                 </a>
                 <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Mettre à jour</button>

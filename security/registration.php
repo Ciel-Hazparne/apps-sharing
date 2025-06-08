@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Créer l'utilisateur
     if (createUser($pdo, $full_name, $age, $email, $password)) {
         $_SESSION['LOGGED_USER'] = ['email' => $email];
-        header('Location: ../pages/home.php');
+        header('Location: ../pages/home.html.php');
         exit;
     }
 
