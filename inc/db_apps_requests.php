@@ -72,3 +72,8 @@ function readApp(PDO $pdo, int $id): array|false
     $stmt->execute(['id' => $id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+function deleteApp(PDO $pdo, int $id): bool
+{
+    $stmt = $pdo->prepare('DELETE FROM apps WHERE app_id = :id');
+    return $stmt->execute(['id' => $id]);
+}

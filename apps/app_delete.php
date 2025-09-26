@@ -26,8 +26,7 @@ if (!empty($app['file'])) {
 }
 
 // Supprime de la base
-$stmt = $pdo->prepare('DELETE FROM apps WHERE app_id = :id');
-$deleted = $stmt->execute(['id' => $id]);
+$deleted = deleteApp($pdo, $id);
 
 require_once(__DIR__ . '/../partials/header.html.php');
 ?>

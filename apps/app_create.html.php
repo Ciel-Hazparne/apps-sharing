@@ -10,7 +10,7 @@ $pageTitle = "Création App";
     <form action="app_create.php" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="name" class="form-label">Nom de l'appli</label>
-            <input type="text" class="form-control" id="name" name="name " required>
+            <input type="text" class="form-control" id="name" name="name" required>
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description de l'appli</label>
