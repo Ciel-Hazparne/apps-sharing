@@ -19,7 +19,7 @@ $pageTitle = "Création App";
         </div>
         <div class="mb-3">
             <label for="file">Importez votre appli compressée (format Zip)</label>
-            <input type="file" class="form-control" id="file" name="file" required>
+            <input type="file" class="form-control" id="file" name="file">
         </div>
 
         <div class="mt-4">
