@@ -41,6 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
-
+// --- Redirection vers la liste des applis ---
 header("Location: ../pages/home.html.php");
 exit;

@@ -2,74 +2,78 @@
 session_start();
 require_once(__DIR__ . '/../inc/requires.php');
 
-// Récupération des données du formulaire
-$dataApp = $_POST;
-
-// Vérification des champs obligatoires
+// --- Validation des champs obligatoires ---
 if (
-    empty($dataApp['name']) ||
-    empty($dataApp['description']) ||
-    trim(strip_tags($dataApp['name'])) === '' ||
-    trim(strip_tags($dataApp['description'])) === ''
+        empty($_POST['name']) ||
+        empty($_POST['description']) ||
+        trim(strip_tags($_POST['name'])) === '' ||
+        trim(strip_tags($_POST['description'])) === ''
 ) {
-    echo "Il faut le nom de l'application et sa description pour soumettre le formulaire.";
-    return;
+    $_SESSION['flash'] = [
+            'type' => 'danger',
+            'message' => "Le nom et la description de l'application sont obligatoires."
+    ];
+    header('Location: /index.php');
+    exit;
 }
 
-// Nettoyage des données
-$name = trim(strip_tags($dataApp['name']));
-$description = trim(strip_tags($dataApp['description']));
-$creator = $_SESSION['LOGGED_USER']['email'];
-
-// Gestion du fichier ZIP
+// --- Nettoyage et préparation des données ---
+$name = trim(strip_tags($_POST['name']));
+$description = trim(strip_tags($_POST['description']));
+$creator = $_SESSION['LOGGED_USER']['email'] ?? 'unknown';
 $uploadDir = __DIR__ . '/../files/';
-$file = null;
 
-if (
-    isset($_FILES['file']) &&
-    $_FILES['file']['error'] === UPLOAD_ERR_OK
-) {
+// --- Gestion du fichier ZIP ---
+if (!empty($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     $fileTmpPath = $_FILES['file']['tmp_name'];
     $originalName = basename($_FILES['file']['name']);
     $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
 
     if ($fileExtension !== 'zip') {
-        echo "Le fichier doit être au format ZIP.";
-        return;
+        $_SESSION['flash'] = [
+                'type' => 'danger',
+                'message' => "Le fichier doit être au format ZIP."
+        ];
+        header('Location: /index.php');
+        exit;
     }
 
-    // Nom unique pour éviter les collisions
+    // Génération d’un nom unique et déplacement du fichier
     $file = uniqid('app_', true) . '.zip';
     $destPath = $uploadDir . $file;
 
     if (!move_uploaded_file($fileTmpPath, $destPath)) {
-        echo "Erreur lors du téléchargement du fichier.";
-        return;
+        $_SESSION['flash'] = [
+                'type' => 'danger',
+                'message' => "Erreur lors du téléchargement du fichier."
+        ];
+        header('Location: /index.php');
+        exit;
     }
 }
 
-// Insertion en base
+// --- Insertion en BDD ---
 $pdo = getPDO();
-$createdApp = createApp($pdo, $name, $description, $creator, $file);
-?>
+$success = createApp($pdo, $name, $description, $creator, $file);
 
-<?php require_once(__DIR__ . '/../partials/header.html.php'); ?>
-
-<h1>Appli ajoutée avec succès !</h1>
-
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title"><?= htmlspecialchars($name) ?></h5>
-        <p class="card-text"><b>Email</b> : <?= htmlspecialchars($creator) ?></p>
-        <p class="card-text"><b>Description</b> : <?= nl2br(htmlspecialchars($description)) ?></p>
-        <?php if ($file): ?>
-            <p class="card-text"><b>Fichier</b> : <a href="../files/<?= $file ?>" target="_blank"><?= $file ?></a></p>
-        <?php endif; ?>
-        <a href="../pages/home.html.php" class="btn btn-dark">
-            <i class="fa fa-reply"></i> Retour à l'accueil
-        </a>
-    </div>
-
-</div>
-
-<?php require_once(__DIR__ . '/../partials/footer.html.php'); ?>
+// --- Flash message + redirection ---
+if ($success) {
+    $_SESSION['flash'] = [
+            'type' => 'success',
+            'message' => "Votre application a été ajoutée avec succès."
+    ];
+    $_SESSION['created_app'] = [
+            'name' => $name,
+            'description' => $description,
+            'creator' => $creator,
+            'file' => $file
+    ];
+} else {
+    $_SESSION['flash'] = [
+            'type' => 'danger',
+            'message' => "Une erreur est survenue lors de l'ajout de votre application."
+    ];
+}
+// --- Redirection vers la page de récapitulatif ---
+header('Location: /pages/app_create_summary.html.php');
+exit;

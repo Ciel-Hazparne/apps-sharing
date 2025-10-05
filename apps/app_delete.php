@@ -2,22 +2,31 @@
 session_start();
 require_once(__DIR__ . '/../inc/requires.php');
 
+// --- Validation de l'identifiant ---
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    echo "Identifiant manquant.";
-    return;
+    $_SESSION['flash'] = [
+            'type' => 'danger',
+            'message' => "Identifiant manquant ou invalide."
+    ];
+    header('Location: /index.php');
+    exit;
 }
 
-$id = (int)$_GET['id'];
-
+$id = (int) $_GET['id'];
 $pdo = getPDO();
-$app = retrieveApp($pdo, $id);
 
+// --- Vérification de l'application ---
+$app = retrieveApp($pdo, $id);
 if (!$app) {
-    echo "Application introuvable.";
-    return;
+    $_SESSION['flash'] = [
+            'type' => 'danger',
+            'message' => "Application introuvable."
+    ];
+    header('Location: /index.php');
+    exit;
 }
 
-// Supprime le fichier
+// --- Suppression du fichier associé ---
 if (!empty($app['file'])) {
     $filePath = __DIR__ . '/../files/' . $app['file'];
     if (file_exists($filePath)) {
@@ -25,19 +34,28 @@ if (!empty($app['file'])) {
     }
 }
 
-// Supprime de la base
+// --- Suppression en base ---
 $deleted = deleteApp($pdo, $id);
 
-require_once(__DIR__ . '/../partials/header.html.php');
-?>
+// --- Message flash et stockage temporaire ---
+if ($deleted) {
+    $_SESSION['flash'] = [
+            'type' => 'success',
+            'message' => "L'application <b>" . htmlspecialchars($app['name']) . "</b> a été supprimée avec succès."
+    ];
+    $_SESSION['deleted_app'] = [
+            'name' => $app['name'],
+            'description' => $app['description'],
+            'creator' => $app['creator'] ?? 'inconnu',
+            'file' => $app['file']
+    ];
+} else {
+    $_SESSION['flash'] = [
+            'type' => 'danger',
+            'message' => "Une erreur est survenue lors de la suppression."
+    ];
+}
 
-<div>
-    <?php if ($deleted): ?>
-        <h1>Application supprimée avec succès</h1>
-        <a href="/index.php" class="btn btn-secondary"><i class="fa fa-reply"></i> Retour à l’accueil</a>
-    <?php else: ?>
-        <div class="alert alert-danger">La suppression a échoué.</div>
-    <?php endif; ?>
-</div>
-
-<?php require_once(__DIR__ . '/../partials/footer.html.php'); ?>
+// --- Redirection vers la page de récapitulatif ---
+header('Location: /pages/app_delete_summary.html.php');
+exit;

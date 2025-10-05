@@ -28,7 +28,6 @@ if (!$app) {
         <h1>Mettre à jour <?= $app['name']; ?></h1>
         <form action="app_update.php" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="id" class="form-label">Identifiant de l'appli</label>
                 <input type="hidden" class="form-control" id="id" name="id" value="<?= $app['app_id']; ?>">
             </div>
             <div class="mb-3">
