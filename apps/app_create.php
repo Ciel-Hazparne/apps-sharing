@@ -23,8 +23,16 @@ $description = trim(strip_tags($_POST['description']));
 $creator = $_SESSION['LOGGED_USER']['email'] ?? 'unknown';
 $uploadDir = __DIR__ . '/../files/';
 
-// --- Gestion du fichier ZIP ---
-if (!empty($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+// --- Gérer le fichier ZIP (obligatoire pour la création) ---
+if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+    $_SESSION['flash'] = [
+            'type' => 'danger',
+            'message' => "Un fichier ZIP est obligatoire pour créer une application."
+    ];
+    header('Location: app_create.html.php');
+    exit;
+}
+// Vérification extension .zip et déplacement du fichier
     $fileTmpPath = $_FILES['file']['tmp_name'];
     $originalName = basename($_FILES['file']['name']);
     $fileExtension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
@@ -34,7 +42,7 @@ if (!empty($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
                 'type' => 'danger',
                 'message' => "Le fichier doit être au format ZIP."
         ];
-        header('Location: /index.php');
+        header('Location: app_create.html.php');
         exit;
     }
 
@@ -47,10 +55,9 @@ if (!empty($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
                 'type' => 'danger',
                 'message' => "Erreur lors du téléchargement du fichier."
         ];
-        header('Location: /index.php');
+        header('app_create.html.php');
         exit;
     }
-}
 
 // --- Insertion en BDD ---
 $pdo = getPDO();
