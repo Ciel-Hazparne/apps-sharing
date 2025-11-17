@@ -15,8 +15,8 @@ $pageTitle = "Accueil";
 require_once(__DIR__ . '/../partials/header.html.php');
 ?>
 
-<h1 class="mb-4">Site de partage de solutions logicielles</h1>
-
+<h1 class="mb-4">Site de partage de solutions logicielles </h1>
+<a href="../apps/app_index.html.php" class="btn btn-info mb-3">Vue sous forme de tableau</a>
 <div class="row">
     <?php foreach (getApps($apps) as $app) : ?>
         <div class="col-md-6 col-lg-4 mb-4">
